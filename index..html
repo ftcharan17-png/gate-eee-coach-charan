@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GATE EEE Coach</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f0f4ff;color:#172554;margin:0;padding:20px}
+main{max-width:600px;margin:auto}
+header,.card{background:white;padding:18px;border-radius:14px;margin-bottom:15px;box-shadow:0 2px 8px #0001}
+h1{color:#1d4ed8}
+button{background:#1d4ed8;color:white;border:0;padding:12px;border-radius:9px;margin:4px;cursor:pointer}
+.task{display:block;padding:10px;margin:7px 0;background:#eff6ff;border-radius:8px}
+input{margin-right:8px}
+</style>
+</head>
+<body>
+<main>
+<header>
+<h1>🎓 GATE EEE Coach</h1>
+<p>Target: GATE EEE 2030 | Aim: AIR under 500</p>
+<p>Daily consistency beats one-day hard work!</p>
+</header>
+<section class="card">
+<h2>Today's Study Plan</h2>
+<label class="task"><input type="checkbox">Morning: Learn one concept (5:10–6:00 AM)</label>
+<label class="task"><input type="checkbox">Semester preparation (7:00–8:00 PM)</label>
+<label class="task"><input type="checkbox">GATE concept revision (8:15–8:55 PM)</label>
+<label class="task"><input type="checkbox">Solve 5 practice questions</label>
+<label class="task"><input type="checkbox">Revise formulas</label>
+<p>Completed: <span id="count">0</span>/5 tasks</p>
+</section>
+<section class="card">
+<h2>📘 Today's Lesson: Ohm's Law</h2>
+<p>Ohm's law: V = I × R</p>
+<p>V = Voltage (volts), I = Current (amperes), R = Resistance (ohms).</p>
+<p>Example: V = 10 V, R = 5 Ω. Then I = V/R = 2 A.</p>
+</section>
+<section class="card">
+<h2>📝 Sunday Mini Test</h2>
+<p>Choose the correct answer for each question.</p>
+<p>1. Ohm's law is:</p>
+<label class="task"><input type="radio" name="q1" value="a">V = IR</label>
+<label class="task"><input type="radio" name="q1" value="b">V = I + R</label>
+<p>2. Unit of current?</p>
+<label class="task"><input type="radio" name="q2" value="a">Volt</label>
+<label class="task"><input type="radio" name="q2" value="b">Ampere</label>
+<p>3. If V=12 V and R=4 Ω, current is:</p>
+<label class="task"><input type="radio" name="q3" value="a">3 A</label>
+<label class="task"><input type="radio" name="q3" value="b">48 A</label>
+<p>4. Unit of resistance?</p>
+<label class="task"><input type="radio" name="q4" value="a">Ohm</label>
+<label class="task"><input type="radio" name="q4" value="b">Watt</label>
+<p>5. If I=2 A and R=6 Ω, voltage is:</p>
+<label class="task"><input type="radio" name="q5" value="a">3 V</label>
+<label class="task"><input type="radio" name="q5" value="b">12 V</label>
+<button onclick="grade()">Submit Sunday Test</button>
+<h3 id="result">Score: Not attempted</h3>
+<p id="feedback"></p>
+</section>
+<section class="card">
+<h2>📅 Weekly Review</h2>
+<p>Every Sunday, take the mini test and write down your mistakes in a notebook.</p>
+<p>December 10–30: Focus on semester exams; pause GATE tasks.</p>
+<p>Note: This starter website doesn't automatically save test history after closing or refresh.</p>
+</section>
+</main>
+<script>
+const checks=[...document.querySelectorAll('input[type="checkbox"]')];
+checks.forEach(c=>c.addEventListener('change',()=>{
+document.getElementById('count').textContent=checks.filter(x=>x.checked).length;
+}));
+function grade(){
+const answers={q1:'a',q2:'b',q3:'a',q4:'a',q5:'b'};
+let score=0,answered=0;
+for(const q in answers){
+const choice=document.querySelector('input[name="'+q+'"]:checked');
+if(choice){answered++;if(choice.value===answers[q])score++;}
+}
+document.getElementById('result').textContent='Score: '+score+'/5 ('+(score*20)+'%)';
+document.getElementById('feedback').textContent='Answered '+answered+'/5. Correct answers: 1-A, 2-B, 3-A, 4-A, 5-B. Review the concepts you missed.';
+}
+</script>
+</body>
+</html>
