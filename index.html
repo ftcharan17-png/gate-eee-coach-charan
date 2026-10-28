@@ -1,168 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#172554">
-<title>GATE EEE Coach</title>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>GATE EEE Coach V3</title>
 <style>
-:root{--navy:#172554;--blue:#1d4ed8;--pale:#eff6ff;--gold:#f5b301;--ink:#172033;--muted:#64748b;--green:#15803d;--line:#dbe4f0}
-*{box-sizing:border-box}body{margin:0;background:#f4f7fc;color:var(--ink);font:16px/1.5 Arial,sans-serif}
-header{background:linear-gradient(135deg,#172554,#1d4ed8);color:#fff;padding:24px 16px}
-.wrap{max-width:900px;margin:auto}header h1{margin:0 0 5px;font-size:28px}header p{margin:4px 0;color:#e0eaff}
-main{padding:16px;max-width:900px;margin:auto}.row{display:flex;gap:12px;flex-wrap:wrap}.stat{flex:1;min-width:125px;background:white;border:1px solid var(--line);border-radius:14px;padding:14px}.stat strong{display:block;font-size:25px;color:var(--blue)}.card{background:white;border:1px solid var(--line);border-radius:16px;padding:18px;margin:14px 0;box-shadow:0 3px 12px #0f172a08}
-h2{font-size:21px;margin:0 0 10px;color:var(--navy)}h3{margin:14px 0 6px;color:var(--navy)}p{margin:7px 0}.muted{color:var(--muted);font-size:14px}
-button,select{font:inherit;border-radius:10px;padding:10px 13px;border:1px solid #cbd5e1;background:white;color:var(--ink);cursor:pointer}
-button.primary{background:var(--blue);border-color:var(--blue);color:white;font-weight:700}button.gold{background:#fff7d6;border-color:#f4cf58;color:#854d0e}button:disabled{opacity:.45;cursor:not-allowed}
-.toggle{display:flex;gap:10px;align-items:center;background:var(--pale);border-radius:12px;padding:12px;margin:10px 0}.toggle input{width:20px;height:20px}
-.task{display:flex;align-items:flex-start;gap:10px;border:1px solid var(--line);border-radius:11px;padding:12px;margin:8px 0}.task input{width:20px;height:20px;margin-top:2px;flex-shrink:0}.task.done{background:#f0fdf4;border-color:#86efac}.task.done .tasktitle{text-decoration:line-through;color:var(--muted)}
-.pill{display:inline-block;padding:3px 9px;border-radius:999px;background:#e0e7ff;color:#1e40af;font-size:12px;font-weight:bold}.goldpill{background:#fef3c7;color:#92400e}.lessonbox{background:#f8fafc;border-left:4px solid var(--blue);padding:12px;border-radius:8px;margin:10px 0}.formula{font-size:20px;font-weight:bold;color:#1d4ed8;text-align:center;padding:10px}
-.question{border:1px solid var(--line);padding:12px;border-radius:12px;margin:12px 0}.question label{display:block;padding:5px}.feedback{font-weight:bold;margin-top:8px}.hidden{display:none}.bar{height:10px;background:#e2e8f0;border-radius:20px;overflow:hidden}.bar>div{height:100%;width:0;background:#22c55e;transition:width .2s}
-footer{text-align:center;color:var(--muted);padding:20px;font-size:13px}
-@media(max-width:500px){header h1{font-size:24px}.card{padding:14px}main{padding:10px}.stat{min-width:100px}}
-</style>
-</head>
-<body>
-<header><div class="wrap">
-<h1>🎓 GATE EEE Coach</h1>
-<p>GATE EEE 2030 · Target: AIR under 500</p>
-<p>Learn → Practise → Test → Review. One steady day at a time.</p>
-</div></header>
-<main>
-<div class="row">
- <div class="stat"><span class="muted">🪙 Gold coins</span><strong id="coins">0</strong></div>
- <div class="stat"><span class="muted">⭐ Stars earned</span><strong id="stars">0</strong></div>
- <div class="stat"><span class="muted">🔥 Study streak</span><strong id="streak">0 days</strong></div>
-</div>
-<section class="card">
-<h2>⚙️ Your study settings</h2>
-<label class="toggle"><input id="semToggle" type="checkbox"><span><b>Enable semester preparation</b><br><span class="muted">Adds your daily 7–8 PM semester task. Switch off when semester prep isn't needed.</span></span></label>
-<label class="toggle"><input id="holidayToggle" type="checkbox"><span><b>Holiday / extra-study mode</b><br><span class="muted">Adds a longer lesson, extra numericals and revision. Use when you have more free time.</span></span></label>
-<label class="toggle"><input id="breakToggle" type="checkbox"><span><b>Semester exam break (Dec 10–30)</b><br><span class="muted">Pauses GATE tasks and focuses on semester study during this period.</span></span></label>
-<p class="muted">These are manual switches. The site does not send automatic reminders.</p>
-</section>
-<section class="card">
-<h2>📅 Today's study plan <span id="dayLabel" class="pill"></span></h2>
-<p id="planIntro">Complete each task to earn coins. Finish the daily target to earn a star.</p>
-<div class="bar"><div id="progressBar"></div></div><p class="muted" id="progressText">0% complete</p>
-<div id="tasks"></div>
-<p><b>Daily reward:</b> <span class="goldpill pill">🪙 10 coins per completed task</span> <span class="pill">⭐ 1 star for all required tasks</span></p>
-<div id="rewardMessage" class="lessonbox">Start with your first task. Your progress is saved on this device.</div>
-</section>
-<section class="card">
-<h2>📘 Today's lesson</h2>
-<p><span class="pill" id="topicTag">Electrical Circuits</span> <span class="pill" id="levelTag">Foundation</span></p>
-<h3 id="lessonTitle">Ohm's Law</h3>
-<div id="lessonBody"></div>
-<h3>Quick practice</h3>
-<div id="practice"></div>
-<button class="primary" id="checkPractice">Check answers</button>
-<div id="practiceResult" class="feedback" aria-live="polite"></div>
-</section>
-<section class="card" id="sundayCard">
-<h2>📝 Sunday weekly test</h2>
-<p id="sundayStatus"></p>
-<div id="sundayQuiz"></div>
-<button class="primary" id="submitSunday">Submit Sunday test</button>
-<div id="sundayResult" class="feedback" aria-live="polite"></div>
-<p class="muted">The weekly test appears only on Sundays. Test scores are saved on this device.</p>
-</section>
-<section class="card">
-<h2>🏆 Targets & progress</h2>
-<p id="goalSummary">Daily target: complete the required tasks and attempt the lesson practice.</p>
-<div class="row">
-<div class="stat"><span class="muted">Tasks completed today</span><strong id="doneCount">0/0</strong></div>
-<div class="stat"><span class="muted">Sunday tests saved</span><strong id="testCount">0</strong></div>
-<div class="stat"><span class="muted">Best Sunday score</span><strong id="bestScore">—</strong></div>
-</div>
-<h3>Recent test history</h3><div id="history" class="muted">No Sunday test taken yet.</div>
-<button id="resetToday">Reset today's checklist</button>
-</section>
-<footer>GATE EEE Coach · A study aid, not an official GATE resource. AIR under 500 is a goal, not a guarantee. Verify syllabus and PYQs from official sources.</footer>
-</main>
+*{box-sizing:border-box}body{margin:0;background:#eef4fb;color:#202b40;font:16px/1.5 Arial}header{background:linear-gradient(120deg,#102a83,#2878db);color:white;padding:24px}main{max-width:1000px;margin:18px auto;padding:0 12px}.card{background:white;border:1px solid #d9e2f2;border-radius:15px;padding:16px;margin-bottom:14px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.stat{background:#f5f8ff;padding:10px;border-radius:10px}.stat small{display:block;color:#667}.stat strong{font-size:23px;color:#1746b3}button{border:0;border-radius:9px;padding:10px 12px;background:#1746b3;color:white;font-weight:bold;cursor:pointer}.tab{background:#dbe7ff;color:#19366d;margin:3px}.tab.active{background:#1746b3;color:white}.task{display:flex;gap:10px;padding:10px;margin:7px 0;background:#f7faff;border-radius:9px;align-items:flex-start}input[type=checkbox]{width:18px;height:18px;margin-top:4px;accent-color:#16834a}input[type=date]{padding:7px;border:1px solid #bac8df;border-radius:7px;max-width:100%}h2,h3{color:#203b78}h2{margin:0 0 8px}.muted,small{color:#66758a}.progress{height:10px;background:#e5eaf3;border-radius:99px;overflow:hidden}.progress div{height:100%;background:#20a464;width:0}.hidden{display:none!important}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.tag{background:#eaf1ff;color:#244a9a;border-radius:20px;padding:3px 8px;font-size:12px}.question{padding:12px;border:1px solid #d9e2f2;border-radius:10px;margin:10px 0}.question label{display:block;padding:4px}.feedback{font-weight:bold}.pill{background:#fff4cf;color:#855b00;padding:6px;border-radius:8px;display:inline-block}@media(max-width:600px){.stats{grid-template-columns:repeat(2,1fr)}}
+</style></head><body>
+<header><h1>🎓 GATE EEE Coach V3</h1><b>Target: GATE EEE 2030 · Goal: AIR under 500</b><p>Learn → Practise → Test → Review</p></header><main>
+<div class="card stats"><div class="stat"><small>🪙 Gold coins</small><strong id="coins">0</strong></div><div class="stat"><small>⭐ Stars</small><strong id="stars">0</strong></div><div class="stat"><small>🔥 Study streak</small><strong id="streak">0 days</strong></div><div class="stat"><small>📚 Syllabus done</small><strong id="pct">0%</strong></div></div>
+<div class="card"><h2>⚙️ Study settings</h2>
+<label class="task"><input id="sem" type="checkbox"><span><b>Enable semester preparation</b><br><small>Adds 7–8 PM semester study.</small></span></label>
+<label class="task"><input id="holiday" type="checkbox"><span><b>Holiday / extra-study mode</b><br><small>Adds longer learning, extra numericals and revision.</small></span></label>
+<label class="task"><input id="break" type="checkbox"><span><b>Semester exam break (Dec 10–30)</b><br><small>Pauses GATE work and focuses on semester subjects.</small></span></label>
+<small>Settings and progress are saved in this browser on this device. No automatic reminders.</small></div>
+<nav><button class="tab active" data-tab="today">Today's Plan</button><button class="tab" data-tab="learn">Learn</button><button class="tab" data-tab="test">Practice / Test</button><button class="tab" data-tab="syllabus">Full Syllabus</button><button class="tab" data-tab="review">Progress</button></nav>
+<section id="today" class="panel card"><h2>📅 Today's study plan <span id="date" class="tag"></span></h2><p id="intro">Today's goal: learn, practise, revise.</p><div id="tasks"></div><div class="progress"><div id="bar"></div></div><p id="count">0 tasks complete</p><div id="reward" class="pill hidden">🎉 Daily target complete! Star earned.</div><h3>Today's lesson: Ohm's Law</h3><p>Voltage (V) pushes charge, current (I) is flow of charge, and resistance (R) opposes current.</p><p><b>Formula:</b> V = I × R; I = V/R; R = V/I.</p><p><b>Example:</b> 12 V across 4 Ω gives I = 12/4 = <b>3 A</b>.</p><p>Normal target: 5 questions. Holiday mode: 10 questions plus extra revision.</p></section>
+<section id="learn" class="panel card hidden"><h2>📘 Learn step by step</h2><h3>Lesson 1 — Ohm's Law</h3><ul><li>Voltage unit: volt (V)</li><li>Current unit: ampere (A)</li><li>Resistance unit: ohm (Ω)</li><li>For an ohmic element under constant conditions: V = IR.</li></ul><h3>Worked examples</h3><ol><li>V=10 V, R=5 Ω → I=2 A.</li><li>I=2 A, R=6 Ω → V=12 V.</li><li>V=24 V, I=3 A → R=8 Ω.</li></ol><p>Write given values, choose the formula, substitute units, calculate, and check your answer.</p><p class="muted">The syllabus tracker includes your notebook topics. This starter version has a full checklist, but not yet a complete lecture for every chapter.</p></section>
+<section id="test" class="panel card hidden"><h2>📝 Practice / mini test</h2><p>Choose answers, then check them.</p><div id="qs"></div><button id="check">Check answers</button> <span id="result" class="feedback"></span><p class="muted">Sunday is the weekly test day. On other days this is optional practice.</p></section>
+<section id="syllabus" class="panel card hidden"><h2>🗂️ Full syllabus tracker</h2><p>Set your own target date for each chapter. Tick only after learning, practice questions and revision.</p><div class="row"><b>Overall target date:</b><input type="date" id="overall"><button id="saveOverall">Save</button></div><p id="overallMsg" class="muted"></p><div id="syllabi"></div></section>
+<section id="review" class="panel card hidden"><h2>📈 Progress & Sunday review</h2><div id="stats"></div><h3>Weekly review checklist</h3><div id="weekly"><label class="task"><input type="checkbox">Take weekly test and record score.</label><label class="task"><input type="checkbox">Redo wrong questions without solutions.</label><label class="task"><input type="checkbox">Revise formulas and list weak topics.</label><label class="task"><input type="checkbox">Set next week's chapter targets.</label></div><button id="saveWeekly">Save Sunday review</button><span id="weeklyMsg"></span><p> AIR under 500 is an ambitious goal, not a guarantee. It needs complete syllabus coverage, PYQs, mock tests and mistake analysis.</p></section>
+</main><footer style="text-align:center;padding:20px;color:#667">GATE EEE Coach V3 · Keep a backup before clearing browser data.</footer>
 <script>
-const lessons=[
-{topic:"Electrical Circuits",level:"Foundation",title:"Ohm's Law and resistance",mins:25,
-body:`<div class="lessonbox"><b>Idea:</b> For a resistor at constant physical conditions, voltage is proportional to current.</div><div class="formula">V = I R &nbsp; | &nbsp; I = V/R &nbsp; | &nbsp; R = V/I</div><p><b>Units:</b> Voltage V is in volts (V), current I in amperes (A), resistance R in ohms (Ω).</p><h3>Solved example 1</h3><p>A 10 V source is connected across a 5 Ω resistor. Find current.</p><p><b>Step 1:</b> I = V/R. <b>Step 2:</b> I = 10/5 = <b>2 A</b>.</p><h3>Solved example 2</h3><p>Current is 3 A through 4 Ω. Voltage = IR = 3 × 4 = <b>12 V</b>.</p><p><b>GATE tip:</b> Check units and identify which two values are given before choosing the formula.</p>`,
-practice:[{q:"A 12 V source is connected across 4 Ω. Current is:",opts:["3 A","48 A","8 A"],a:0,why:"I = V/R = 12/4 = 3 A."},{q:"A current of 2 A flows through 6 Ω. Voltage is:",opts:["3 V","8 V","12 V"],a:2,why:"V = IR = 2 × 6 = 12 V."},{q:"The SI unit of resistance is:",opts:["Ampere","Ohm","Watt"],a:1,why:"Resistance is measured in ohms (Ω)."}]},
-{topic:"Electrical Circuits",level:"Foundation",title:"Series and parallel resistors",mins:30,
-body:`<div class="lessonbox"><b>Series:</b> same current flows through each resistor.</div><div class="formula">R<sub>series</sub> = R₁ + R₂ + …</div><p><b>Parallel:</b> same voltage appears across each branch.</p><div class="formula">1/R<sub>parallel</sub> = 1/R₁ + 1/R₂ + …</div><h3>Solved example</h3><p>Two resistors 2 Ω and 3 Ω in series: R = 2 + 3 = <b>5 Ω</b>.</p><p>Two resistors 6 Ω and 3 Ω in parallel: 1/R = 1/6 + 1/3 = 3/6, so R = <b>2 Ω</b>.</p><p><b>Memory tip:</b> Series equivalent is larger than each resistor; parallel equivalent is smaller than the smallest branch.</p>`,
-practice:[{q:"2 Ω and 7 Ω in series give:",opts:["5 Ω","9 Ω","14 Ω"],a:1,why:"Series resistances add: 2 + 7 = 9 Ω."},{q:"6 Ω and 3 Ω in parallel give:",opts:["2 Ω","3 Ω","9 Ω"],a:0,why:"Product over sum: (6×3)/(6+3) = 2 Ω."},{q:"In a series circuit, the same quantity through each resistor is:",opts:["Voltage","Current","Power"],a:1,why:"Series elements share the same current."}]},
-{topic:"Circuit Analysis",level:"Foundation",title:"Kirchhoff's Current Law (KCL)",mins:30,
-body:`<div class="lessonbox"><b>KCL:</b> At a node, total current entering equals total current leaving. It follows from conservation of charge.</div><div class="formula">Σ I<sub>in</sub> = Σ I<sub>out</sub></div><h3>Solved example</h3><p>At a node, 5 A enters. Two currents leave: 2 A and I. Then 5 = 2 + I, so <b>I = 3 A</b>.</p><p><b>Steps:</b> Mark entering/leaving directions → write KCL → solve algebraically. A negative answer means the actual direction is opposite to your assumption.</p>`,
-practice:[{q:"4 A enters a node; 1 A and I leave. I is:",opts:["3 A","5 A","4 A"],a:0,why:"4 = 1 + I, so I = 3 A."},{q:"KCL is based on conservation of:",opts:["Energy","Charge","Resistance"],a:1,why:"Charge does not accumulate indefinitely at an ideal node."},{q:"If an assumed current is −2 A, its actual direction is:",opts:["Same direction","Opposite direction","No current"],a:1,why:"The negative sign indicates the opposite direction."}]},
-{topic:"Circuit Analysis",level:"Foundation",title:"Kirchhoff's Voltage Law (KVL)",mins:30,
-body:`<div class="lessonbox"><b>KVL:</b> The algebraic sum of voltages around a closed loop is zero.</div><div class="formula">Σ V = 0</div><h3>Solved example</h3><p>A 12 V source feeds two series drops, 5 V and V₂. KVL gives 12 − 5 − V₂ = 0, so <b>V₂ = 7 V</b>.</p><p><b>Sign tip:</b> Choose a loop direction first and keep the sign convention consistent throughout.</p>`,
-practice:[{q:"A 10 V source has a 4 V drop and another drop V. V is:",opts:["6 V","14 V","4 V"],a:0,why:"10 − 4 − V = 0, so V = 6 V."},{q:"KVL applies around a:",opts:["Closed loop","Single node only","Open end only"],a:0,why:"KVL sums voltages around a closed path."},{q:"KVL is related to conservation of:",opts:["Energy","Charge only","Mass only"],a:0,why:"The net energy change around a loop is zero."}]},
-{topic:"Network Theorems",level:"Foundation",title:"Superposition theorem — first idea",mins:35,
-body:`<div class="lessonbox"><b>Statement:</b> In a linear circuit with multiple independent sources, the response can be found by considering one independent source at a time and adding the responses.</div><p><b>When turning off ideal sources:</b> replace an ideal voltage source with a short circuit; replace an ideal current source with an open circuit. Keep dependent sources active.</p><h3>Important caution</h3><p>Superposition applies to voltage and current, not directly to power. Find total voltage/current first, then calculate power.</p><p>For GATE, practise circuits with two sources and carefully redraw the circuit for each source.</p>`,
-practice:[{q:"An ideal voltage source set to zero becomes:",opts:["Open circuit","Short circuit","Resistor"],a:1,why:"A zero-volt ideal voltage source is a short circuit."},{q:"An ideal current source set to zero becomes:",opts:["Open circuit","Short circuit","Wire with resistance"],a:0,why:"A zero-amp ideal current source is an open circuit."},{q:"Superposition is directly applied to:",opts:["Power only","Voltage and current","Resistance only"],a:1,why:"Voltage/current responses add linearly; power does not superpose directly."}]}
+const $=x=>document.getElementById(x),today=()=>new Date().toISOString().slice(0,10);
+const chapters=[
+["General Aptitude",["Verbal aptitude","Quantitative aptitude","Analytical aptitude","Spatial aptitude"]],
+["Engineering Mathematics",["Linear Algebra","Calculus","Differential Equations","Complex Variables","Probability and Statistics","Numerical Methods"]],
+["Electric Circuits",["Network Theorems","AC and DC Circuits","Transient Analysis","Two-Port Networks"]],
+["Signals and Systems",["Fourier / Laplace / Z Transforms","LTI Systems","Sampling"]],
+["Electrical Machines",["Transformers","DC Machines","Induction Machines","Synchronous Machines"]],
+["Power Systems",["Power Flow","Fault Analysis","Transmission Lines","Protection","Power System Stability"]],
+["Control Systems",["Block Diagrams","Time Response","Root Locus","Frequency Response","Bode Plots","Stability"]],
+["Power Electronics",["Converters / Rectifiers","Choppers","Inverters","AC Controllers"]],
+["Analog Electronics",["Diodes","BJT","MOSFET","Operational Amplifiers"]],
+["Digital Electronics",["Boolean Algebra","Combinational Circuits","Sequential Circuits","Counters and Registers"]],
+["Electromagnetics",["Electrostatics","Magnetostatics","Maxwell's Equations","Waves and Transmission Lines"]]
 ];
-const todayKey=()=>new Date().toISOString().slice(0,10);
-const key='gateEEECoachV2';
-let data;
-try{data=JSON.parse(localStorage.getItem(key))||{};}catch(e){data={};}
-data.coins=data.coins||0;data.stars=data.stars||0;data.history=data.history||[];data.days=data.days||{};data.settings=data.settings||{sem:false,holiday:false,break:false};data.streak=data.streak||0;
-function save(){localStorage.setItem(key,JSON.stringify(data));}
-function currentLesson(){const d=new Date();const start=new Date('2026-10-01T00:00:00');const day=Math.max(0,Math.floor((new Date(d.getFullYear(),d.getMonth(),d.getDate())-start)/86400000));return lessons[Math.floor(day/1)%lessons.length];}
-const dayName=new Date().toLocaleDateString(undefined,{weekday:'long'});
-const dayDate=todayKey();
-document.getElementById('dayLabel').textContent=dayName+' · '+dayDate;
-const lesson=currentLesson();
-document.getElementById('topicTag').textContent=lesson.topic;document.getElementById('levelTag').textContent=lesson.level;document.getElementById('lessonTitle').textContent=lesson.title;document.getElementById('lessonBody').innerHTML=lesson.body;
-document.getElementById('practice').innerHTML=lesson.practice.map((q,i)=>`<div class="question"><b>${i+1}. ${q.q}</b>${q.opts.map((o,j)=>`<label><input type="radio" name="p${i}" value="${j}"> ${o}</label>`).join('')}<div class="muted" id="why${i}"></div></div>`).join('');
-function dayData(){if(!data.days[dayDate])data.days[dayDate]={done:[],rewarded:[],star:false,practiceDone:false};return data.days[dayDate];}
-function makeTasks(){
- const d=dayData(), holiday=document.getElementById('holidayToggle').checked, sem=document.getElementById('semToggle').checked, pause=document.getElementById('breakToggle').checked;
- let tasks=[];
- if(pause){tasks=[{id:'semfocus',title:'Semester exam preparation',desc:'Focus on your current semester subject; GATE tasks are paused.',required:true}];}
- else {
- tasks=[{id:'lesson',title:`Learn: ${lesson.title}`,desc:`${lesson.mins} min · Read the lesson and worked examples.`,required:true},{id:'practice',title:'Solve 3 lesson questions',desc:'Try first without looking at the explanation.',required:true},{id:'revise',title:'Formula + mistake notebook',desc:'10 min · Write key formulas and one mistake/lesson learned.',required:true}];
- if(holiday)tasks.push({id:'extra',title:'Holiday extra practice',desc:'25–40 min · Re-solve examples and make 3 similar questions.',required:true});
- if(sem)tasks.push({id:'semester',title:'Semester preparation',desc:'7:00–8:00 PM · Minimum one hour.',required:true});
- }
- return tasks;
-}
-function renderTasks(){
- const tasks=makeTasks(),d=dayData(),box=document.getElementById('tasks');
- box.innerHTML=tasks.map(t=>`<label class="task ${d.done.includes(t.id)?'done':''}"><input type="checkbox" data-task="${t.id}" ${d.done.includes(t.id)?'checked':''}><span><span class="tasktitle"><b>${t.title}</b></span><br><span class="muted">${t.desc}</span></span></label>`).join('');
- box.querySelectorAll('input').forEach(input=>input.addEventListener('change',()=>{
-  const id=input.dataset.task,dd=dayData();
-  if(input.checked&&!dd.done.includes(id)){dd.done.push(id);if(!dd.rewarded.includes(id)){data.coins+=10;dd.rewarded.push(id);}}
-  else if(!input.checked){dd.done=dd.done.filter(x=>x!==id);}
-  const all=makeTasks().every(t=>dd.done.includes(t.id));
-  if(all&&!dd.star){dd.star=true;data.stars++;data.streak++;document.getElementById('rewardMessage').textContent='⭐ Daily target complete! You earned a star. Excellent consistency.';}
-  else if(!all&&dd.star){dd.star=false;data.stars=Math.max(0,data.stars-1);data.streak=Math.max(0,data.streak-1);}
-  save();renderTasks();renderStats();
- }));
- const done=tasks.filter(t=>d.done.includes(t.id)).length, pct=tasks.length?Math.round(done/tasks.length*100):0;
- document.getElementById('progressBar').style.width=pct+'%';document.getElementById('progressText').textContent=`${done}/${tasks.length} required tasks complete (${pct}%)`;document.getElementById('doneCount').textContent=done+'/'+tasks.length;
- if(pct===100&&d.star)document.getElementById('rewardMessage').textContent='⭐ Daily target complete! Star earned. Come back tomorrow for the next lesson.';
- else document.getElementById('rewardMessage').textContent='Each newly completed task earns 10 coins. Complete every required task to earn 1 star.';
- document.getElementById('planIntro').textContent=document.getElementById('breakToggle').checked?'Semester break active: focus on semester preparation today.':'Complete each task to earn coins. Finish all required tasks to earn a star.';
-}
-function renderStats(){
- document.getElementById('coins').textContent=data.coins;document.getElementById('stars').textContent=data.stars;document.getElementById('streak').textContent=data.streak+' days';
- document.getElementById('testCount').textContent=data.history.length;
- document.getElementById('bestScore').textContent=data.history.length?Math.max(...data.history.map(x=>x.score))+'/5':'—';
- document.getElementById('history').innerHTML=data.history.length?data.history.slice(-5).reverse().map(x=>`${x.date}: <b>${x.score}/5</b>`).join('<br>'):'No Sunday test taken yet.';
-}
-['semToggle','holidayToggle','breakToggle'].forEach((id,i)=>{const k=['sem','holiday','break'][i];document.getElementById(id).checked=!!data.settings[k];document.getElementById(id).addEventListener('change',e=>{data.settings[k]=e.target.checked;save();renderTasks();});});
-document.getElementById('checkPractice').addEventListener('click',()=>{
- let score=0,answered=0;
- lesson.practice.forEach((q,i)=>{const v=document.querySelector(`input[name="p${i}"]:checked`);const el=document.getElementById('why'+i);if(v){answered++;if(+v.value===q.a){score++;el.textContent='Correct! '+q.why;el.style.color='#15803d';}else{el.textContent='Not quite. '+q.why;el.style.color='#b91c1c';}}else{el.textContent='Choose an answer. '+q.why;el.style.color='#64748b';}});
- document.getElementById('practiceResult').textContent=`Practice score: ${score}/${lesson.practice.length}. Attempted: ${answered}/${lesson.practice.length}.`;
- const dd=dayData();if(!dd.practiceDone){dd.practiceDone=true;save();}
-});
-const isSunday=new Date().getDay()===0;
-document.getElementById('sundayStatus').textContent=isSunday?'Today is Sunday — complete your weekly test and review mistakes.':'The weekly test is locked until Sunday. Use today for learning and practice.';
-document.getElementById('submitSunday').disabled=!isSunday;
-if(isSunday){
-const qs=[{q:'Ohm’s law is:',o:['V = IR','V = I + R','V = R/I'],a:0},{q:'Two resistors 2 Ω and 3 Ω in series equal:',o:['1 Ω','5 Ω','6 Ω'],a:1},{q:'KCL follows conservation of:',o:['Charge','Energy only','Resistance'],a:0},{q:'An ideal voltage source turned off for superposition is:',o:['Open circuit','Short circuit','Still unchanged'],a:1},{q:'For V=12 V and R=4 Ω, current is:',o:['3 A','4 A','48 A'],a:0}];
-document.getElementById('sundayQuiz').innerHTML=qs.map((q,i)=>`<div class="question"><b>${i+1}. ${q.q}</b>${q.o.map((o,j)=>`<label><input type="radio" name="s${i}" value="${j}"> ${o}</label>`).join('')}</div>`).join('');
-document.getElementById('submitSunday').addEventListener('click',()=>{let score=0;qs.forEach((q,i)=>{const a=document.querySelector(`input[name="s${i}"]:checked`);if(a&&+a.value===q.a)score++;});if(data.history.some(x=>x.date===dayDate)){document.getElementById('sundayResult').textContent='You already submitted today’s test. Review your saved history.';return;}data.history.push({date:dayDate,score});save();renderStats();document.getElementById('sundayResult').textContent=`Your score: ${score}/5. Review every incorrect answer and revise the topic.`;});
-}else{document.getElementById('sundayQuiz').innerHTML='<p class="muted">No exam today. Sunday test unlocks automatically based on your device date.</p>';}
-document.getElementById('resetToday').addEventListener('click',()=>{if(confirm('Reset today’s checklist? Previously earned coins are kept.')){data.days[dayDate]={done:[],rewarded:[],star:false,practiceDone:false};save();renderTasks();}});
-renderTasks();renderStats();save();
-</script>
-</body></html>
+let st;try{st=JSON.parse(localStorage.gateV3||"{}")}catch(e){st={}};Object.assign(st,{coins:st.coins||0,stars:st.stars||0,streak:st.streak||0,done:st.done||{},rewarded:st.rewarded||{},syl:st.syl||{},deadlines:st.deadlines||{},scores:st.scores||[]});
+function save(){localStorage.gateV3=JSON.stringify(st);stats()}
+const base=[["Morning concept study (5:10–6:00 AM)",20],["Solve 5 practice questions",20],["GATE concept revision (8:15–8:55 PM)",20],["Revise formulas and write mistakes",10]];
+function taskRows(){let a=[...base];if($("sem").checked)a.splice(1,0,["Semester preparation (7:00–8:00 PM)",20]);if($("holiday").checked)a.push(["Holiday: extra 5 numericals + revision",20],["Holiday: mini-test and mistake analysis",20]);if($("break").checked)a=[["Semester subject study (minimum 1 hour)",30],["Revise class notes / important questions",20],["Recap today's semester topic",10]];return a}
+function tasks(){let arr=taskRows(),done=st.done[today()]||[];$("intro").textContent=$("break").checked?"Semester break is ON: GATE tasks paused; focus on semester study.":"Today's target: learn one concept, solve questions and revise."; $("tasks").innerHTML=arr.map((x,i)=>`<label class="task"><input type="checkbox" data-task="${i}" ${done.includes(i)?"checked":""}><span><b>${x[0]}</b><br><small>Reward: ${x[1]} gold coins</small></span></label>`).join("");document.querySelectorAll("[data-task]").forEach(c=>c.onchange=()=>toggle(+c.dataset.task,c.checked,arr));let n=done.length;$("bar").style.width=(n/arr.length*100)+"%";$("count").textContent=`Completed: ${n}/${arr.length} tasks`;$("reward").classList.toggle("hidden",n!==arr.length)}
+function toggle(i,on,arr){let d=today();st.done[d]=st.done[d]||[];let a=st.done[d],key=d+"_"+i;if(on&&!a.includes(i)){a.push(i);if(!st.rewarded[key]){st.coins+=arr[i][1];st.rewarded[key]=1}}if(!on)a=a.filter(v=>v!==i);st.done[d]=a;if(a.length===arr.length&&!st.rewarded[d+"_star"]){st.stars++;st.rewarded[d+"_star"]=1}if(st.last!==d){st.streak=st.last===new Date(Date.now()-86400000).toISOString().slice(0,10)?st.streak+1:1;st.last=d}save();tasks()}
+function syllabus(){let total=0,done=0;$("syllabi").innerHTML=chapters.map((g,gi)=>`<div class="card"><h3>${g[0]} <span class="tag">${g[1].filter((t,ti)=>st.syl[gi+"_"+ti]).length}/${g[1].length}</span></h3>${g[1].map((t,ti)=>{let k=gi+"_"+ti;total++;if(st.syl[k])done++;return `<label class="task"><input type="checkbox" data-syl="${k}" ${st.syl[k]?"checked":""}><span><b>${t}</b><br><small>Target date: <input type="date" data-date="${k}" value="${st.deadlines[k]||""}"> · Lesson + practice + revision</small></span></label>`}).join("")}</div>`).join("");document.querySelectorAll("[data-syl]").forEach(c=>c.onchange=()=>{st.syl[c.dataset.syl]=c.checked;save();syllabus()});document.querySelectorAll("[data-date]").forEach(c=>c.onchange=()=>{st.deadlines[c.dataset.date]=c.value;save()});$("overall").value=st.overall||"";$("overallMsg").textContent=st.overall?"Overall target: "+st.overall:"Choose and save your overall target date.";$("pct").textContent=Math.round(done/total*100)+"%"}
+function stats(){$("coins").textContent=st.coins;$("stars").textContent=st.stars;$("streak").textContent=st.streak+" days";let n=Object.values(st.syl).filter(Boolean).length,total=chapters.reduce((a,g)=>a+g[1].length,0);$("pct").textContent=Math.round(n/total*100)+"%";$("stats").innerHTML=`<p><b>Coins:</b> ${st.coins} · <b>Stars:</b> ${st.stars}</p><p><b>Syllabus topics:</b> ${n}/${total}</p><p><b>Test attempts:</b> ${st.scores.length}</p><p><b>Recent scores:</b> ${st.scores.slice(-5).map(x=>x.score+"/"+x.total+" ("+x.date+")").join(" · ")||"No attempts yet"}</p>`}
+const qs=[["A 12 V source is connected to 4 Ω. Current?",["2 A","3 A","4 A","48 A"],1,"I=V/R=12/4=3 A."],["2 A flows through 5 Ω. Voltage?",["2.5 V","7 V","10 V","20 V"],2,"V=IR=2×5=10 V."],["24 V produces 3 A. Resistance?",["8 Ω","21 Ω","27 Ω","72 Ω"],0,"R=V/I=24/3=8 Ω."],["In a series circuit, which is the same through every element?",["Voltage","Current","Resistance","Power"],1,"The same current flows through elements in series."],["KCL is based on conservation of…",["Energy","Charge","Resistance","Power factor"],1,"KCL follows conservation of electric charge."]];
+$("qs").innerHTML=qs.map((q,i)=>`<div class="question"><b>${i+1}. ${q[0]}</b>${q[1].map((a,j)=>`<label><input type="radio" name="q${i}" value="${j}"> ${a}</label>`).join("")}<div id="fb${i}" class="feedback"></div></div>`).join("");
+$("check").onclick=()=>{let score=0;qs.forEach((q,i)=>{let p=document.querySelector(`input[name=q${i}]:checked`),ok=p&&+p.value===q[2];if(ok)score++;$("fb"+i).textContent=(ok?"Correct. ":"Review: ")+q[3];$("fb"+i).style.color=ok?"green":"#a33"});$("result").textContent=`Score ${score}/${qs.length}`;st.scores.push({score,total:qs.length,date:today()});save()};
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("hidden",p.id!==b.dataset.tab));if(b.dataset.tab==="syllabus")syllabus();if(b.dataset.tab==="review")stats()});
+["sem","holiday","break"].forEach(id=>{let v=localStorage["gateSetting_"+id];$(id).checked=v==="1";$(id).onchange=()=>{localStorage["gateSetting_"+id]=$(id).checked?"1":"0";tasks()}});
+$("saveOverall").onclick=()=>{st.overall=$("overall").value;save();syllabus()};$("saveWeekly").onclick=()=>{$("weeklyMsg").textContent=" Saved in this browser."};
+$("date").textContent=new Date().toLocaleDateString(undefined,{weekday:"long",month:"short",day:"numeric",year:"numeric"});tasks();syllabus();stats();
+</script></body></html>
